@@ -1,7 +1,8 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    ANTHROPIC_API_KEY: str
+    GEMINI_API_KEY: str = ""
+    ANTHROPIC_API_KEY: str = ""  # fallback
     OPENAI_API_KEY: str = ""  # fallback
     API_KEY: str
     ENVIRONMENT: str = "development"
