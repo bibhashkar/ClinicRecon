@@ -1,96 +1,97 @@
 import { useState } from 'react';
-import { apiCall } from '../lib/api';
-import { Card } from './Card'; // simple div with Tailwind
-import { Loader2, Check, X } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+
+// const API_BASE = import.meta.env.DEV ? '' : 'http://localhost:8000';
+const API_BASE = 'http://localhost:8000';
 
 export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
   const [input, setInput] = useState('');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [approved, setApproved] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'approved' | 'rejected'>('idle');
 
-  const loadSample = async (num: number) => {
-    // Load one of your 10 test cases (case_1_reconcile.json etc.)
-    const sample = await import(`../../fixtures/case_${num}_reconcile.json`);
-    setInput(JSON.stringify(sample.default, null, 2));
+  const loadSample = (num: number) => {
+    // You already have these fixtures – just load one
+    fetch(`/fixtures/case_${num}_reconcile.json`)
+      .then(r => r.json())
+      .then(data => setInput(JSON.stringify(data, null, 2)));
   };
 
   const reconcile = async () => {
     setLoading(true);
     try {
-      const data = JSON.parse(input);
-      const res = await apiCall('/reconcile/medication', data, apiKey);
-      setResult(res);
-      setApproved(false);
+      const res = await fetch(`${API_BASE}/api/reconcile/medication`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: input,
+      });
+      const data = await res.json();
+      setResult(data);
+      setStatus('idle');
     } catch (err: any) {
-      alert(err.message);
+      alert('Error: ' + err.message);
     }
     setLoading(false);
   };
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      {/* Input Side */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Input Conflicting Sources</h2>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      {/* Left: Input */}
+      <div className="bg-white p-8 rounded-3xl shadow">
+        <h2 className="text-2xl font-semibold mb-6">Input Conflicting Records</h2>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full h-96 font-mono text-sm p-4 border rounded-xl"
-          placeholder="Paste JSON or click Load Sample"
+          className="w-full h-96 font-mono text-sm p-6 border border-gray-200 rounded-2xl focus:outline-none"
+          placeholder='Paste JSON here or click "Load Sample"'
         />
-        <div className="flex gap-3 mt-4">
-          <button onClick={() => loadSample(1)} className="px-6 py-3 bg-gray-200 rounded-lg">Load Sample 1 (Metformin)</button>
-          <button onClick={() => loadSample(2)} className="px-6 py-3 bg-gray-200 rounded-lg">Load Sample 2 (Aspirin)</button>
-          <button
-            onClick={reconcile}
-            disabled={loading}
-            className="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
-          >
+        <div className="flex gap-4 mt-6">
+          <button onClick={() => loadSample(1)} className="flex-1 py-4 bg-gray-100 hover:bg-gray-200 rounded-2xl font-medium">Load Sample 1 (Metformin)</button>
+          <button onClick={reconcile} disabled={loading} className="flex-1 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold flex items-center justify-center gap-2">
             {loading && <Loader2 className="animate-spin" />} Reconcile with AI
           </button>
         </div>
       </div>
 
-      {/* Result Side */}
+      {/* Right: Result */}
       {result && (
-        <Card className="p-8">
-          <h3 className="text-2xl font-bold text-emerald-700">{result.reconciled_medication}</h3>
-          
-          <div className="my-6">
-            <div className="flex justify-between text-sm mb-2">
-              <span>Confidence</span>
-              <span>{(result.confidence_score * 100).toFixed(0)}%</span>
+        <div className="bg-white p-8 rounded-3xl shadow">
+          <h3 className="text-3xl font-bold text-emerald-700">{result.reconciled_medication}</h3>
+
+          <div className="mt-8">
+            <div className="flex justify-between mb-2 text-sm">
+              <span>Confidence Score</span>
+              <span className="font-mono">{(result.confidence_score * 100).toFixed(0)}%</span>
             </div>
-            <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
-                style={{ width: `${result.confidence_score * 100}%` }}
-              />
+            <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500" style={{ width: `${result.confidence_score * 100}%` }} />
             </div>
           </div>
 
-          <div className="bg-gray-50 p-5 rounded-xl text-sm leading-relaxed">
+          <div className="mt-8 bg-gray-50 p-6 rounded-2xl text-sm leading-relaxed">
             {result.reasoning}
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-10 flex gap-4">
             <button
-              onClick={() => setApproved(true)}
-              className="flex-1 bg-emerald-600 text-white py-4 rounded-xl flex items-center justify-center gap-2"
+              onClick={() => setStatus('approved')}
+              className="flex-1 py-5 bg-emerald-600 text-white rounded-2xl font-semibold flex items-center justify-center gap-3"
             >
-              <Check /> Approve & Update EHR
+              <CheckCircle className="w-6 h-6" /> Approve & Update EHR
             </button>
             <button
-              onClick={() => setApproved(false)}
-              className="flex-1 bg-red-600 text-white py-4 rounded-xl flex items-center justify-center gap-2"
+              onClick={() => setStatus('rejected')}
+              className="flex-1 py-5 bg-red-600 text-white rounded-2xl font-semibold flex items-center justify-center gap-3"
             >
-              <X /> Reject Suggestion
+              <XCircle className="w-6 h-6" /> Reject Suggestion
             </button>
           </div>
 
-          {approved && <p className="mt-4 text-emerald-600 font-medium">✅ Approved – ready for clinical use</p>}
-        </Card>
+          {status === 'approved' && <p className="mt-6 text-emerald-600 font-medium text-center">✅ Approved – ready for clinical use</p>}
+        </div>
       )}
     </div>
   );

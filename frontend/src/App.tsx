@@ -1,42 +1,46 @@
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/Tabs'; // (see below)
 import ReconcilePanel from './pages/ReconcilePanel';
-import QualityPanel from './pages/QualityPanel';
 
 function App() {
   const [apiKey, setApiKey] = useState('your-secret-api-key-for-basic-auth');
+  const [activeTab, setActiveTab] = useState<'reconcile' | 'quality'>('reconcile');
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-5xl mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-emerald-700">Onye Reconciliation Engine</h1>
-          <p className="text-gray-600 mt-2">Clinical Data Reconciliation & Quality Validation</p>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center mb-10">
+          <h1 className="text-5xl font-bold text-emerald-700 tracking-tight">Onye</h1>
+          <p className="text-xl text-gray-600 mt-2">Clinical Data Reconciliation Engine</p>
         </header>
 
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">API Key (for auth)</label>
+        <div className="mb-8">
+          <label className="block text-sm font-medium mb-2">API Key</label>
           <input
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            className="w-96 px-4 py-2 border rounded-lg"
+            className="w-96 px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
         </div>
 
-        <Tabs defaultValue="reconcile" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="reconcile">Medication Reconciliation</TabsTrigger>
-            <TabsTrigger value="quality">Data Quality Validation</TabsTrigger>
-          </TabsList>
+        {/* Simple Tabs */}
+        <div className="flex border-b mb-8">
+          <button
+            onClick={() => setActiveTab('reconcile')}
+            className={`px-8 py-4 font-medium text-lg ${activeTab === 'reconcile' ? 'border-b-4 border-emerald-600 text-emerald-700' : 'text-gray-500'}`}
+          >
+            Medication Reconciliation
+          </button>
+          <button
+            onClick={() => setActiveTab('quality')}
+            className={`px-8 py-4 font-medium text-lg ${activeTab === 'quality' ? 'border-b-4 border-emerald-600 text-emerald-700' : 'text-gray-500'}`}
+          >
+            Data Quality Validation
+          </button>
+        </div>
 
-          <TabsContent value="reconcile">
-            <ReconcilePanel apiKey={apiKey} />
-          </TabsContent>
-          <TabsContent value="quality">
-            <QualityPanel apiKey={apiKey} />
-          </TabsContent>
-        </Tabs>
+        {activeTab === 'reconcile' && <ReconcilePanel apiKey={apiKey} />}
+        {/* QualityPanel coming in next message if you need it */}
       </div>
     </div>
   );
