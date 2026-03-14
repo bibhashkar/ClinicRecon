@@ -2,10 +2,9 @@ from app.models.patient import ReconcileRequest, ReconcileResponse
 from app.llm.client import call_llm
 from app.llm.prompts import RECONCILE_SYSTEM_PROMPT, RECONCILE_USER_TEMPLATE
 from app.utils.clinical_rules import calculate_recency_score, adjust_for_egfr
-from functools import lru_cache
 import json
 
-@lru_cache(maxsize=100)
+# @lru_cache(maxsize=100)
 async def reconcile_medication(request: ReconcileRequest) -> ReconcileResponse:
     # Rule-based pre-processing
     best_source = max(request.sources, key=lambda s: calculate_recency_score(s.dict()) * (1 if s.source_reliability == "high" else 0.7))

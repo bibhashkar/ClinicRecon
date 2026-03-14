@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from app.models.patient import ReconcileRequest, ReconcileResponse
 from app.services.reconciliation import reconcile_medication
 
@@ -11,8 +11,11 @@ def verify_api_key(api_key: str):
     return api_key
 
 @router.post("/reconcile/medication", response_model=ReconcileResponse)
-async def reconcile_endpoint(request: ReconcileRequest, api_key: str = Depends(verify_api_key)):
+async def reconcile_endpoint(request: ReconcileRequest
+                            #  , api_key: str = Depends(verify_api_key)
+                             ):
     try:
+        print(request.dict())
         return await reconcile_medication(request)
     except Exception as e:
         raise HTTPException(500, f"Reconciliation failed: {str(e)}")

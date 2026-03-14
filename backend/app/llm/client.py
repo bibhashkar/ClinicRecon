@@ -12,8 +12,10 @@ async def call_llm(system: str, user: str, model: str = "claude-3-5-sonnet-20241
             system=system,
             messages=[{"role": "user", "content": user}]
         )
+        print(f"Anthropic API call successful: {response.content[0].text}")
         return response.content[0].text
     except Exception as e:
+        print(f"Anthropic API call failed: {e}. Attempting fallback to OpenAI.")
         # Fallback to OpenAI if Anthropic fails (graceful degradation)
         if settings.OPENAI_API_KEY:
             client = OpenAI(api_key=settings.OPENAI_API_KEY)

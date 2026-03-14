@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 
+// Use the Vite dev-server proxy (configured in vite.config.ts), or a custom base at build time.
+// In docker-compose mode, `/api/*` is proxied to the backend service.
 // const API_BASE = import.meta.env.DEV ? '' : 'http://localhost:8000';
 const API_BASE = 'http://localhost:8000';
+// const API_BASE = import.meta.env.VITE_API_BASE ?? '';
 
 export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
   const [input, setInput] = useState('');
@@ -19,6 +22,7 @@ export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
 
   const reconcile = async () => {
     setLoading(true);
+    console.log(input);
     try {
       const res = await fetch(`${API_BASE}/api/reconcile/medication`, {
         method: 'POST',
@@ -28,10 +32,17 @@ export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
         },
         body: input,
       });
-      const data = await res.json();
+
+      const text = await res.text();
+      if (!res.ok) {
+        throw new Error(text || `${res.status} ${res.statusText}`);
+      }
+
+      const data = JSON.parse(text);
       setResult(data);
       setStatus('idle');
     } catch (err: any) {
+      console.error(err);
       alert('Error: ' + err.message);
     }
     setLoading(false);
