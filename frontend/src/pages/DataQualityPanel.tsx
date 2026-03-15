@@ -13,8 +13,15 @@ export default function DataQualityPanel() {
   const loadSample = (num: number) => {
     // Load sample data quality record
     fetch(`/fixtures/case_${num}_quality.json`)
-      .then(r => r.json())
-      .then(data => setInput(JSON.stringify(data, null, 2)));
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+        return r.json();
+      })
+      .then(data => setInput(JSON.stringify(data, null, 2)))
+      .catch(err => {
+        console.error('Error loading sample:', err);
+        alert('Error loading sample: ' + err.message);
+      });
   };
 
   const validate = async () => {
