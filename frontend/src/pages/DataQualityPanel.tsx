@@ -5,7 +5,7 @@ import { Loader2, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 // In docker-compose mode, `/api/*` is proxied to the backend service.
 const API_BASE = "http://localhost:8000";
 
-export default function DataQualityPanel({ apiKey }: { apiKey: string }) {
+export default function DataQualityPanel() {
   const [input, setInput] = useState('');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,6 @@ export default function DataQualityPanel({ apiKey }: { apiKey: string }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
         },
         body: input,
       });

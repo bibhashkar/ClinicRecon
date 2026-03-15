@@ -7,7 +7,7 @@ import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 const API_BASE = 'http://localhost:8000';
 // const API_BASE = import.meta.env.VITE_API_BASE ?? '';
 
-export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
+export default function ReconcilePanel() {
   const [input, setInput] = useState('');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,6 @@ export default function ReconcilePanel({ apiKey }: { apiKey: string }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': apiKey,
         },
         body: input,
       });

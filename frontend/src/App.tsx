@@ -29,8 +29,8 @@ function App() {
           </button>
         </div>
 
-        {activeTab === 'reconcile' && <ReconcilePanel apiKey={apiKey} />}
-        {activeTab === 'quality' && <DataQualityPanel apiKey={apiKey} />}
+        {activeTab === 'reconcile' && <ReconcilePanel />}
+        {activeTab === 'quality' && <DataQualityPanel />}
       </div>
     </div>
   );
