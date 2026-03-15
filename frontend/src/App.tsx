@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ReconcilePanel from './pages/ReconcilePanel';
+import DataQualityPanel from './pages/DataQualityPanel';
 
 function App() {
   const [apiKey, setApiKey] = useState('your-secret-api-key-for-basic-auth');
@@ -40,7 +41,7 @@ function App() {
         </div>
 
         {activeTab === 'reconcile' && <ReconcilePanel apiKey={apiKey} />}
-        {/* QualityPanel coming in next message if you need it */}
+        {activeTab === 'quality' && <DataQualityPanel apiKey={apiKey} />}
       </div>
     </div>
   );

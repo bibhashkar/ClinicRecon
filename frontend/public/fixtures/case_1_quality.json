@@ -1,0 +1,17 @@
+{
+  "demographics": {
+    "age": 68,
+    "gender": "female",
+    "race": "caucasian"
+  },
+  "medications": ["metformin 500mg BID", "lisinopril 10mg daily"],
+  "allergies": ["penicillin"],
+  "conditions": ["type 2 diabetes", "hypertension"],
+  "vital_signs": {
+    "systolic_bp": 140,
+    "diastolic_bp": 85,
+    "heart_rate": 72,
+    "temperature": 98.6
+  },
+  "last_updated": "2026-03-01T10:00:00Z"
+}
