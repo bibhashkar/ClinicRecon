@@ -2,10 +2,7 @@ fastapi==0.135.1
 uvicorn==0.41.0
 pydantic==2.12.5
 pydantic-settings==2.13.1          # Required for BaseSettings in config.py
-anthropic==0.84.0
 openai==2.26.0
-google-api-core==2.30.0
-google-genai==1.67.0
 python-dotenv==1.2.2
 httpx==0.28.1
 pytest==9.0.2

@@ -3,7 +3,6 @@ import ReconcilePanel from './pages/ReconcilePanel';
 import DataQualityPanel from './pages/DataQualityPanel';
 
 function App() {
-  const [apiKey, setApiKey] = useState('your-secret-api-key-for-basic-auth');
   const [activeTab, setActiveTab] = useState<'reconcile' | 'quality'>('reconcile');
 
   return (
@@ -12,17 +11,7 @@ function App() {
         <header className="text-center mb-10">
           <h1 className="text-5xl font-bold text-emerald-700 tracking-tight">Onye</h1>
           <p className="text-xl text-gray-600 mt-2">Clinical Data Reconciliation Engine</p>
-        </header>
-
-        <div className="mb-8">
-          <label className="block text-sm font-medium mb-2">API Key</label>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="w-96 px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
-        </div>
+        </header>        
 
         {/* Simple Tabs */}
         <div className="flex border-b mb-8">

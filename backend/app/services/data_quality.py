@@ -1,9 +1,8 @@
 from app.models.patient import DataQualityRecord, DataQualityResponse
 from app.llm.client import call_llm
 from app.llm.prompts import DATA_QUALITY_SYSTEM_PROMPT, DATA_QUALITY_USER_TEMPLATE
-from functools import lru_cache
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 async def validate_data_quality(record: DataQualityRecord) -> DataQualityResponse:
     # Rule-based pre-processing
