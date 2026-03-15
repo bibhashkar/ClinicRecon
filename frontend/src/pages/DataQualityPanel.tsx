@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Loader2, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import ApiResponseDisplay from '../components/ApiResponseDisplay';
 
 // Use the Vite dev-server proxy (configured in vite.config.ts), or a custom base at build time.
 // In docker-compose mode, `/api/*` is proxied to the backend service.
@@ -117,6 +118,9 @@ export default function DataQualityPanel() {
           </div>
         </div>
       )}
+
+      {/* Raw API Response */}
+      <ApiResponseDisplay result={result} />
     </div>
   );
 }

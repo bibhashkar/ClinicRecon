@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import ApiResponseDisplay from '../components/ApiResponseDisplay';
 
 // Use the Vite dev-server proxy (configured in vite.config.ts), or a custom base at build time.
 // In docker-compose mode, `/api/*` is proxied to the backend service.
@@ -103,6 +104,8 @@ export default function ReconcilePanel() {
           {status === 'approved' && <p className="mt-6 text-emerald-600 font-medium text-center">✅ Approved – ready for clinical use</p>}
         </div>
       )}
+
+      <ApiResponseDisplay result={result} />
     </div>
   );
 }
