@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.reconcile import router as reconcile_router
+from app.api.v1.handler import router as reconcile_router
 # add validate_router
 
 app = FastAPI(title="Onye Clinical Data Reconciliation Engine")

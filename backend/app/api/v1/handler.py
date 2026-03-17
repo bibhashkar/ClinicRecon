@@ -6,16 +6,8 @@ from app.llm.client import LLMRateLimitError
 
 router = APIRouter()
 
-def verify_api_key(api_key: str):
-    from app.core.config import settings
-    if api_key != settings.API_KEY:
-        raise HTTPException(401, "Invalid API key")
-    return api_key
-
 @router.post("/reconcile/medication", response_model=ReconcileResponse)
-async def reconcile_endpoint(request: ReconcileRequest
-                            #  , api_key: str = Depends(verify_api_key)
-                             ):
+async def reconcile_endpoint(request: ReconcileRequest):
     try:
         print(request.dict())
         return await reconcile_medication(request)
@@ -25,9 +17,7 @@ async def reconcile_endpoint(request: ReconcileRequest
         raise HTTPException(500, f"Reconciliation failed: {str(e)}")
 
 @router.post("/validate/data-quality", response_model=DataQualityResponse)
-async def validate_data_quality_endpoint(record: DataQualityRecord
-                                        #  , api_key: str = Depends(verify_api_key)
-                                         ):
+async def validate_data_quality_endpoint(record: DataQualityRecord):
     try:
         return await validate_data_quality(record)
     except LLMRateLimitError as e:
