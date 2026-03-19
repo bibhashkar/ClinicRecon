@@ -204,6 +204,7 @@ backend/
 ### High Priority
 - **Confidence Score Calibration**: Multi-factor weighting (LLM confidence × source agreement × recency × clinical plausibility)
 - **Duplicate Record Detection**: Levenshtein distance algorithm for identifying similar medication entries
+- **Prompt Improvement**: Prompts especially System one can be improved with few shots example, edge cases and more detail instructions
 - **Webhook Support**: Real-time notifications for reconciliation results
 - **Database Integration**: PostgreSQL for audit trails and result caching
 - **Batch Processing**: Handle multiple patients in single API call
