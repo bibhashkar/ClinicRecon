@@ -9,7 +9,6 @@ router = APIRouter()
 @router.post("/reconcile/medication", response_model=ReconcileResponse)
 async def reconcile_endpoint(request: ReconcileRequest):
     try:
-        print(request.dict())
         return await reconcile_medication(request)
     except LLMRateLimitError as e:
         raise HTTPException(429, f"LLM rate limit exceeded: {str(e)}")
