@@ -278,4 +278,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+## 📸 Screenshots
+
+### Medication Reconciliation
+![Application Interface](preview/Screenshot%20from%202026-03-19%2019-54-35.png)
+
+### Medication Reconciliation Response
+![Medication Reconciliation](preview/Screenshot%20from%202026-03-19%2019-54-51.png)
+
+### Data Quality Validation
+![Data Quality Validation](preview/Screenshot%20from%202026-03-19%2019-55-17.png)
+
+### Data Quality Validation Response
+![Results Display](preview/Screenshot%20from%202026-03-19%2019-55-30.png)
+
 **Built with ❤️ and AI for safer healthcare through AI**
