@@ -39,6 +39,7 @@ Respond ONLY with valid JSON using the exact schema below.
 
 DATA_QUALITY_USER_TEMPLATE = """
 Patient Record: {record}
+Current time (UTC): {current_time}
 
 Task: Analyze data quality and output ONLY this JSON:
 {{

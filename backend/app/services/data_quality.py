@@ -2,7 +2,7 @@ from app.models.patient import DataQualityRecord, DataQualityResponse
 from app.llm.client import call_llm
 from app.llm.prompts import DATA_QUALITY_SYSTEM_PROMPT, DATA_QUALITY_USER_TEMPLATE
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 async def validate_data_quality(record: DataQualityRecord) -> DataQualityResponse:
     # Rule-based pre-processing
@@ -18,8 +18,10 @@ async def validate_data_quality(record: DataQualityRecord) -> DataQualityRespons
     issues.extend(check_plausibility_issues(record))
 
     # LLM for advanced reasoning + safety
+    current_time = datetime.now(timezone.utc).isoformat()
     user_prompt = DATA_QUALITY_USER_TEMPLATE.format(
-        record=json.dumps(record.dict())
+        record=json.dumps(record.dict()),
+        current_time=current_time,
     )
     try:
         llm_raw = await call_llm(DATA_QUALITY_SYSTEM_PROMPT, user_prompt)
@@ -67,7 +69,10 @@ def calculate_accuracy(record: DataQualityRecord) -> int:
 def calculate_timeliness(record: DataQualityRecord) -> int:
     try:
         last_updated = datetime.fromisoformat(record.last_updated.replace('Z', '+00:00'))
-        now = datetime.now(last_updated.tzinfo)
+        now = datetime.now(timezone.utc)
+        if last_updated > now:
+            return 0
+
         days_old = (now - last_updated).days
         if days_old <= 30:
             return 100
@@ -124,7 +129,16 @@ def check_timeliness_issues(record: DataQualityRecord) -> list:
     issues = []
     try:
         last_updated = datetime.fromisoformat(record.last_updated.replace('Z', '+00:00'))
-        now = datetime.now(last_updated.tzinfo)
+        now = datetime.now(timezone.utc)
+
+        if last_updated > now:
+            issues.append({
+                "field": "last_updated",
+                "issue": f"Timestamp is in the future ({record.last_updated}) relative to current date",
+                "severity": "high",
+            })
+            return issues
+
         days_old = (now - last_updated).days
         if days_old > 365:
             issues.append({"field": "last_updated", "issue": f"Record is {days_old} days old", "severity": "high"})

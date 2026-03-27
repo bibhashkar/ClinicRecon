@@ -2,6 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 from app.fixtures import load_fixture
+from app.services.data_quality import check_timeliness_issues
+
 
 client = TestClient(app)
 
@@ -62,3 +64,22 @@ def test_data_quality_response_structure():
         assert "issues_detected" in result
         assert isinstance(result["breakdown"], dict)
         assert len(result["breakdown"]) == 4  # completeness, accuracy, timeliness, plausibility
+
+
+def test_check_timeliness_future_date_issue():
+    future_record = {
+        "demographics": {"age": 30},
+        "medications": ["aspirin"],
+        "allergies": [],
+        "conditions": [],
+        "vital_signs": {},
+        "last_updated": "2999-01-01T00:00:00Z"
+    }
+
+    class DummyRecord:
+        def __init__(self, data):
+            self.__dict__.update(data)
+
+    record = DummyRecord(future_record)
+    issues = check_timeliness_issues(record)
+    assert any("future" in issue["issue"] for issue in issues)
